@@ -2,22 +2,27 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\AnnouncesResource\Pages;
-use App\Filament\Resources\AnnouncesResource\RelationManagers;
-use App\Models\Announces;
 use Filament\Forms;
-use Filament\Resources\Form;
-use Filament\Resources\Resource;
-use Filament\Resources\Table;
 use Filament\Tables;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Models\Announces;
+use Filament\Resources\Form;
+use Filament\Resources\Table;
+use Filament\Resources\Resource;
 use Filament\Forms\Components\Card;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Checkbox;
-use Filament\Forms\Components\RichEditor;
-use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\Column;
+use Filament\Forms\Components\Checkbox;
+use Filament\Tables\Actions\ViewAction;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Forms\Components\TextInput;
+use Filament\Tables\Columns\ImageColumn;
+use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\RichEditor;
+use Filament\Tables\Actions\DeleteAction;
+use Illuminate\Database\Eloquent\Builder;
+use App\Filament\Resources\AnnouncesResource\Pages;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Filament\Resources\AnnouncesResource\RelationManagers;
+
 class AnnouncesResource extends Resource
 {
     protected static ?string $model = Announces::class;
@@ -30,9 +35,33 @@ class AnnouncesResource extends Resource
             ->schema([
                 Card::make()
                     ->schema([
-                        TextInput::make('title'),
+                        TextInput::make('title')
+                            ->reactive()
+                            ->required(),
+                        TextInput::make('author')
+                            // ->label(__('filament-blog::filament-blog.author'))
+                            
+                            ->required(),
                         RichEditor::make('content'),
-                        Checkbox::make('stasus')
+                        FileUpload::make('banner')
+                        ->label(__('filament-blog::filament-blog.banner'))
+                        // ->image()
+                        // ->maxSize(config('filament-blog.banner.maxSize', 10240))
+                        // ->imageCropAspectRatio(config('filament-blog.banner.cropAspectRatio', '16:9'))
+                        // ->disk(config('filament-blog.banner.disk', 'public'))
+                        // ->directory(config('filament-blog.banner.directory', 'blog'))
+                        // ->storeFileNamesIn('original_filename')
+                        // ->columnSpan([
+                        //     'sm' => 2,
+                        // ]),
+                        ->columns(1)
+                        ->directory('image')
+                        ->enableDownload()
+                        ->preserveFilenames(),
+                        // ->storeFileNamesIn('organal_filename'),
+
+                        
+                        
                     ])
                
             ]);
@@ -42,8 +71,8 @@ class AnnouncesResource extends Resource
     {
         return $table
         ->columns([
+            ImageColumn::make('banner')->label('banner'),
             TextColumn::make('title')->label('title')->sortable()->searchable(),
-            TextColumn::make('content')->label('Content')->sortable()->searchable(),
             TextColumn::make('created_at')->label('Created_At')->sortable()->searchable()
         ])         
 
@@ -51,7 +80,9 @@ class AnnouncesResource extends Resource
                 //
             ])
             ->actions([
+                ViewAction::make(),
                 Tables\Actions\EditAction::make(),
+                DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),

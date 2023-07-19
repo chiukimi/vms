@@ -13,10 +13,12 @@ return new class extends Migration
     {
         Schema::create('annocuces', function (Blueprint $table) {
             $table->id()->auto_increment();
+            $table->string('aunthor');
             $table->string('title');
-            $table->string('content');
+            $table->string('banner');
+            $table->longText('content');
             $table->timestamps();
-            $table->string('stasus');
+            
         });
     }
 

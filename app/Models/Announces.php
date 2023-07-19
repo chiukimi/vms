@@ -10,9 +10,11 @@ class Announces  extends Model
     use HasFactory;
 
     protected $fillable = [
+        'author',
         'title',
+        'banner',
         'content',
-        'stasus',
+        
     ];
 
     protected $nullable = [
