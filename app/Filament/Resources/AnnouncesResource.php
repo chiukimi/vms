@@ -42,9 +42,12 @@ class AnnouncesResource extends Resource
                             // ->label(__('filament-blog::filament-blog.author'))
                             
                             ->required(),
-                        RichEditor::make('content'),
+                            RichEditor::make('content')
+                            ->extraAttributes([
+                                'style' => 'word-wrap: break-word;', // 或使用 'overflow-wrap: break-word;' 屬性
+                            ]),
                         FileUpload::make('banner')
-                        ->label(__('filament-blog::filament-blog.banner'))
+                        // ->label(__('filament-blog::filament-blog.banner'))
                         // ->image()
                         // ->maxSize(config('filament-blog.banner.maxSize', 10240))
                         // ->imageCropAspectRatio(config('filament-blog.banner.cropAspectRatio', '16:9'))
